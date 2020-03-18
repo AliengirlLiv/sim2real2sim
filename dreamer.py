@@ -483,11 +483,12 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   for key, value in define_config().items():
     parser.add_argument(f'--{key}', type=tools.args_type(value), default=value)
+  parser.add_argument('--override_id', action='store_true')
   config = parser.parse_args()
   path = pathlib.Path('.').joinpath('logdir', config.task, 'dreamer', config.id)
   # Raise an error if this ID is already used, unless we're in debug mode.
   if path.exists():
-    if config.id == 'debug':
+    if config.override_id or config.id == 'debug':
       shutil.rmtree(path)
     else:
       raise ValueError('ID %s already in use.' % config.id)
